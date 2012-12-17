@@ -1,7 +1,7 @@
-<!-- BEGIN_INCLUDE(cloudamqp:my-processor) -->
-    <cloudamqp:my-processor content="#[map-payload:content]" />
-<!-- END_INCLUDE(cloudamqp:my-processor) -->
+<!-- BEGIN_INCLUDE(cloudamqp:publish-message) -->
+    <cloudamqp:publish-message queue="myQueue" message="#[map-payload:content]" />
+<!-- END_INCLUDE(cloudamqp:publish-message) -->
 
 <!-- BEGIN_INCLUDE(cloudamqp:receive-messages) -->
-    <cloudamqp:receive-messages queue="queue"/>
+    <cloudamqp:receive-messages queue="myQueue"/>
 <!-- END_INCLUDE(cloudamqp:receive-messages) -->

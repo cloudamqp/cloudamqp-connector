@@ -9,11 +9,15 @@
         http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
         http://www.mulesoft.org/schema/mule/cloudamqp http://www.mulesoft.org/schema/mule/cloudamqp/1.0-SNAPSHOT/mule-cloudamqp.xsd">
 
-    <cloudamqp:config myProperty="Some string"
-            username="xxx" password="yyy"/>
+        <cloudamqp:config host="localhost" vhost="/" username="guest" password="guest"/>
 
-    <flow name="testFlow">
-        <cloudamqp:my-processor content="Another string"/>
+    <flow name="pub">
+        <cloudamqp:publish-message queue="myQueue" message="A message"/>
+    </flow>
+
+    <flow name="sub">
+        <cloudamqp:receive-messages queue="myQueue" />
+        <logger message="### #[payload]" level="INFO" />
     </flow>
 
 </mule>
