@@ -1,4 +1,5 @@
 package cloudamqp.connector;
+
 import org.mule.api.annotations.*;
 import org.mule.api.annotations.param.*;
 import org.mule.api.ConnectionException;
@@ -14,10 +15,10 @@ import java.util.*;
  *
  * @author 84codes AB
  */
-@Connector(name="cloudamqp", schemaVersion="1.0-SNAPSHOT")
+@Connector(name="cloudamqp", schemaVersion="1.0-SNAPSHOT", friendlyName = "CloudAMQP")
 public class CloudAMQPConnector
 {
-  private ConnectionFactory factory = new ConnectionFactory();
+  private static ConnectionFactory factory = new ConnectionFactory();
   private Connection conn;
   private Channel pubChannel;
 
@@ -100,34 +101,34 @@ public class CloudAMQPConnector
    * @throws IOException If message cannot be received
    */
   @Source
-  public void receiveMessages(String queue, final SourceCallback callback) 
-  throws java.io.IOException {
-  Channel subChannel = conn.createChannel();
+  public void receiveMessages(String queue, final SourceCallback callback) throws java.io.IOException {
+    Channel ch = conn.createChannel();
 
-  boolean durable = true;
-  boolean exclusive = false;
-  boolean autoDelete = false;
-  subChannel.queueDeclare(queue, durable, exclusive, autoDelete, null);
+    boolean durable = true;
+    boolean exclusive = false;
+    boolean autoDelete = false;
+    ch.queueDeclare(queue, durable, exclusive, autoDelete, null);
 
-  boolean autoAck = false;
-  subChannel.basicConsume(queue, autoAck, "", new DefaultConsumer(subChannel) {
-    @Override
-    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws java.io.IOException
-  {
-    Map<String, Object> msgArgs = new HashMap<String, Object>();
-    msgArgs.put("routingKey", envelope.getRoutingKey());
+    boolean autoAck = false;
+    ch.basicConsume(queue, autoAck, "", new DefaultConsumer(ch) {
+      @Override
+      public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws java.io.IOException
+    {
+      Map<String, Object> msgArgs = new HashMap<String, Object>();
+      msgArgs.put("routingKey", envelope.getRoutingKey());
 
-    long deliveryTag = envelope.getDeliveryTag();
-    String message = new String(body);
-    try {
-      callback.process(message, msgArgs);
-      this.getChannel().basicAck(deliveryTag, false);
-    } catch (Exception e) {
-      boolean requeue = false;
-      this.getChannel().basicReject(deliveryTag, requeue);
-      //throw e;
+      long deliveryTag = envelope.getDeliveryTag();
+      String message = new String(body);
+      try {
+        callback.process(message, msgArgs);
+        this.getChannel().basicAck(deliveryTag, false);
+      } catch (Exception e) {
+        boolean requeue = false;
+        this.getChannel().basicReject(deliveryTag, requeue);
+        //throw e;
+      }
     }
-  }});
+    });
   }
 
   /**
@@ -147,6 +148,7 @@ public class CloudAMQPConnector
     pubChannel.basicPublish("amq.topic", topic, MessageProperties.PERSISTENT_TEXT_PLAIN, bytes);
     return message;
   }
+
   /**
    * Attempts to receive a message from the queue
    *
@@ -174,21 +176,21 @@ public class CloudAMQPConnector
     ch.basicConsume(queue, autoAck, "amq.topic", new DefaultConsumer(ch) {
       @Override
       public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException
-      {
-        Map<String, Object> msgArgs = new HashMap<String, Object>();
-        msgArgs.put("routingKey", envelope.getRoutingKey());
+    {
+      Map<String, Object> msgArgs = new HashMap<String, Object>();
+      msgArgs.put("routingKey", envelope.getRoutingKey());
 
-        long deliveryTag = envelope.getDeliveryTag();
-        String message = new String(body);
-        try {
-          callback.process(message, msgArgs);
-          this.getChannel().basicAck(deliveryTag, false);
-        } catch (Exception e) {
-          boolean requeue = false;
-          this.getChannel().basicReject(deliveryTag, requeue);
-          //throw e;
-        }
+      long deliveryTag = envelope.getDeliveryTag();
+      String message = new String(body);
+      try {
+        callback.process(message, msgArgs);
+        this.getChannel().basicAck(deliveryTag, false);
+      } catch (Exception e) {
+        boolean requeue = false;
+        this.getChannel().basicReject(deliveryTag, requeue);
+        //throw e;
       }
+    }
     });
   }
 }
