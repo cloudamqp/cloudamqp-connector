@@ -5,3 +5,12 @@
 <!-- BEGIN_INCLUDE(cloudamqp:receive-messages) -->
     <cloudamqp:receive-messages queue="myQueue"/>
 <!-- END_INCLUDE(cloudamqp:receive-messages) -->
+
+<!-- BEGIN_INCLUDE(cloudamqp:publish-topic-message) -->
+    <cloudamqp:publish-topic-message topic="event.1" message="#[map-payload:content]" />
+<!-- END_INCLUDE(cloudamqp:publish-topic-message) -->
+
+<!-- BEGIN_INCLUDE(cloudamqp:receive-topic-messages) -->
+    <cloudamqp:receive-topic-messages topic="event.*" />
+<!-- END_INCLUDE(cloudamqp:receive-topic-messages) -->
+

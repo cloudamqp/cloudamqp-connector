@@ -19,9 +19,9 @@ public class CloudAMQPConnectorTest extends FunctionalTestCase
     }
 
     @Test
-    public void testFlow() throws Exception
+    public void testPubFlow() throws Exception
     {
-        runFlowAndExpect("pub", "A message");
+        runFlowAndExpect("simple-publish", "A message");
     }
 
     /**
