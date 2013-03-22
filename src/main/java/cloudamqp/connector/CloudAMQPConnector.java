@@ -193,4 +193,31 @@ public class CloudAMQPConnector
     }
     });
   }
+
+  /**
+   * Noop
+   *
+   * {@sample.xml ../../../doc/CloudAMQP-connector.xml.sample cloudamqp:publish-noop-message}
+   *
+   * @throws Exception Always
+   * @return The same message
+   */
+  @Processor
+  public String publishNoopMessage() throws Exception
+  {
+    throw new Exception("Don't use this operation");
+  }
+
+  /**
+   * Noop
+   *
+   * {@sample.xml ../../../doc/CloudAMQP-connector.xml.sample cloudamqp:receive-noop-messages}
+   *
+   * @param callback Callback to call when a new message is available.
+   * @throws Exception Always
+   */
+  @Source
+  public void receiveNoopMessages(final SourceCallback callback) throws Exception {
+    throw new Exception("Don't use this operation");
+  }
 }

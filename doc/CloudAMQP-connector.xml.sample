@@ -14,3 +14,11 @@
     <cloudamqp:receive-topic-messages topic="event.*" />
 <!-- END_INCLUDE(cloudamqp:receive-topic-messages) -->
 
+<!-- BEGIN_INCLUDE(cloudamqp:publish-noop-message) -->
+    <cloudamqp:publish-noop-message />
+<!-- END_INCLUDE(cloudamqp:publish-noop-message) -->
+
+<!-- BEGIN_INCLUDE(cloudamqp:receive-noop-messages) -->
+    <cloudamqp:receive-noop-messages />
+<!-- END_INCLUDE(cloudamqp:receive-noop-messages) -->
+
