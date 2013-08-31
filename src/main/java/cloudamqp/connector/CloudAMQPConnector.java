@@ -2,6 +2,7 @@ package cloudamqp.connector;
 
 import org.mule.api.annotations.*;
 import org.mule.api.annotations.param.*;
+import org.mule.api.annotations.display.*;
 import org.mule.api.ConnectionException;
 import org.mule.api.ConnectionExceptionCode;
 import org.mule.api.callback.SourceCallback;
@@ -26,22 +27,26 @@ public class CloudAMQPConnector
    * Connect
    *
    * @param host A host name
+   * @param port Port on server to connect to
    * @param vhost A vhost
    * @param username A username
    * @param password A password
    * @throws ConnectionException
    */
   @Connect
-  public void connect(@ConnectionKey String host, String vhost, String username, String password) throws ConnectionException {
+  public void connect(@ConnectionKey String host, @Default("5672") int port, String vhost, String username, @Password String password) throws ConnectionException {
     try {
       factory.setHost(host);
+      factory.setPort(port);
       factory.setVirtualHost(vhost);
       factory.setUsername(username);
       factory.setPassword(password);
       conn = factory.newConnection();
       pubChannel = conn.createChannel();
     } catch (Exception e) {
-      throw new ConnectionException(ConnectionExceptionCode.UNKNOWN, null, null, e);
+      //throw new ConnectionException(ConnectionExceptionCode.UNKNOWN, null, null, e);
+      System.out.println(e.getMessage() + " " + e.fillInStackTrace() + " " + e.getClass().getCanonicalName()); 
+      throw new ConnectionException(ConnectionExceptionCode.UNKNOWN, null, e.getMessage(), e); 
     }
   }
 
