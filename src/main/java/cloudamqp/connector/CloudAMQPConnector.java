@@ -43,6 +43,7 @@ public class CloudAMQPConnector
       factory.setPassword(password);
       conn = factory.newConnection();
       pubChannel = conn.createChannel();
+      pubChannel.confirmSelect();
     } catch (Exception e) {
       //throw new ConnectionException(ConnectionExceptionCode.UNKNOWN, null, null, e);
       System.out.println(e.getMessage() + " " + e.fillInStackTrace() + " " + e.getClass().getCanonicalName()); 
@@ -91,8 +92,10 @@ public class CloudAMQPConnector
   @Processor
   public String publishMessage(String queue, @Optional @Default("#[payload]") String message) throws java.io.IOException
   {
-    byte[] bytes = message.getBytes();
-    pubChannel.basicPublish("", queue, MessageProperties.PERSISTENT_TEXT_PLAIN, bytes);
+    pubChannel.basicPublish("", queue,
+        MessageProperties.PERSISTENT_TEXT_PLAIN,
+        message.getBytes());
+    pubChannel.waitForConfirmsOrDie();
     return message;
   }
 
