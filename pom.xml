@@ -12,7 +12,7 @@
     <mule.version>3.4.0</mule.version>
     <mule.devkit.version>3.4.0</mule.devkit.version>
     <junit.version>4.9</junit.version>
-    <mockito.version>1.8.2</mockito.version>
+    <mockito.version>1.10.19</mockito.version>
     <jdk.version>1.6</jdk.version>
     <rabbitmq.version>3.3.5</rabbitmq.version>
   </properties>
